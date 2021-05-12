@@ -1,0 +1,31 @@
+SCHEMA: 
+    Everything in Mongoose starts with a Schema. Each schema maps to a MongoDB collection and defines the shape of the documents within that collection.
+        where a collection is a group of documents that is in a database, I belive 
+    example: 
+
+    const blogSchema = new Schema({
+        title:  String, // String is shorthand for {type: String}
+        author: String,
+        body:   String,
+        comments: [{ body: String, date: Date }],
+        date: { type: Date, default: Date.now },
+        hidden: Boolean,
+        meta: {
+            votes: Number,
+            favs:  Number
+        }
+  });
+
+MODELS: 
+    mongoose.model(modelName, schema): returns a model we can work with, allows us to make documents
+    for example: 
+        const doc = new Model();
+        await doc.save(); as u can see, we need await on save (which was my problem when the new object would not apear...)
+
+INSTANCE METHODS: 
+    note: DO NOT use ()=> because no binding, so can't use this
+
+    Example: 
+    animalSchema.methods.findSimilarTypes = function(cb) {
+        return mongoose.model('Animal').find({ type: this.type }, cb);
+    };

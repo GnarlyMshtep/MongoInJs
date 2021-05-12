@@ -1,0 +1,23 @@
+{
+  "name": "mongoinjs101",
+  "version": "1.0.0",
+  "description": "trying to play with mongo in js ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GnarlyMshtep/MongoInJs.git"
+  },
+  "author": "Matan Shtepel",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/GnarlyMshtep/MongoInJs/issues"
+  },
+  "homepage": "https://github.com/GnarlyMshtep/MongoInJs#readme",
+  "dependencies": {
+    "mongodb": "^3.6.6",
+    "mongoose": "^5.12.8"
+  }
+}
