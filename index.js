@@ -1,59 +1,29 @@
 const mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/test', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-}); //opens a pending connection to mongoose
 
-const db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error: ')); // seems like a rather fancy way to console log error
+const {
+    studModel
+} = require('./models');
 
-db.once('open', () => {
-    //all of our code is contained within this callback, which symbolizes we are still connected
-    // I am feeling a bit clastrophobic in this callback, so I wouldn't mind figureing a diffrent way...
-    console.log('The server is up and running!');
+/*
+can't use this syntax, I think its not in node
+import {
+    studModel
+} from './models'*/
 
-    const kittySchema = new mongoose.Schema({ //this is a precompiled template for an object that will populate our documents
-        name: String,
-        /*methods: { This did not work, a fucntion cannot be actually in our schema because functions do not get stored in mongo documents. below is the
-            way we properly do it, and I believe it works because we are appending only to the js object, not to the actual schema, making it callable 
-            in our code, but not a part of the database
-            speak: () => {
-                console.log(this.name ? "Meow name is" + this.name : "I don't have a name");
-            }
-        }*/
+try {
+    /*await*/
+    mongoose.connect('mongodb://localhost:27017/examples', { //will this work with out an await if I don't mind just letting the internal buffering do its thing? 
+        useNewUrlParser: true, //they had an old parser they didn't like, now for example, you have to specify the port. always true unless it is preventing ur connection
+        useUnifiedTopology: true, // use mongo's official engine for connections. reccomended as always true unless prevents stable connections
     });
+} catch (err) {
+    console.error('not connected to mongoDb');
+}
 
-    kittySchema.methods.speak = function () {
-        console.log(this.name ? "Meow name is " + this.name : "I don't have a name");
-    }
+//note that we can use models and all that regardless of connection because of mongoose's internal buffering
 
-    const Kitten = mongoose.model('Kitten', kittySchema); //We compile our schema to create a model, which is a class with which we construct documents.
-    const silence = new Kitten({
-        name: 'Silence'
-    });
-    console.log('silence\'s name is', silence.name);
-
-    const fluffy = new Kitten({
-        name: 'fluffy'
-    });
-
-    fluffy.speak();
-    silence.save((err, silence) => { // we just saved fluffy to the database! Hurray presistance
-        if (err) {
-            return console.error(err);
-        }
-        fluffy.speak();
-    });
-    //find( {params of search (mongo rich query language)}, callback(err, dataReturned))
-    Kitten.find({
-        name: 'Silence'
-    }, (err, kittens) => { //we use our model (the compiled object that helps us interact with the kitten document) to find some kittens)
-        if (err) {
-            return console.error(err);
-        }
-        console.log(kittens);
-    })
-
-
-
+mongoose.connection.on('error', (err) => {
+    console.error('the following non-initial error occured: ' + err);
 });
+
+
